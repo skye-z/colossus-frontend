@@ -57,7 +57,7 @@
             </template>
           </n-button>
         </n-dropdown>
-        <n-tooltip trigger="hover" :delay="1000" :show-arrow="false">
+        <!-- <n-tooltip trigger="hover" :delay="1000" :show-arrow="false">
           <template #trigger>
             <n-button size="small" tertiary>
               <template #icon>
@@ -68,7 +68,7 @@
             </n-button>
           </template>
           下载管理
-        </n-tooltip>
+        </n-tooltip> -->
       </n-button-group>
       <n-button-group>
         <n-tooltip trigger="hover" :delay="1000" :show-arrow="false" v-if="hide">
