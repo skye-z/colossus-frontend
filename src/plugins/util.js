@@ -49,10 +49,12 @@ const util = {
         console.log(err)
         window.$message.warning(action + '失败, 发生意料之外的错误')
     },
+    // API函数错误(无加载)
     funcErrorNoLoading(err, action) {
         console.log(err)
         window.$message.warning(action + '失败, 发生意料之外的错误')
     },
+    // API函数错误(自定义提示)
     funcErrorDIYTips(err, tips, action) {
         console.log(err)
         tips.type = 'warning'
@@ -61,6 +63,7 @@ const util = {
             tips.destroy()
         }, 2000)
     },
+    // 构建期限提示信息
     buildPeriod(now, period) {
         let oneDay = 1000 * 60 * 60 * 24
         let offset = parseInt(period) - now
@@ -88,6 +91,14 @@ const util = {
             if (offset >= oneDay) txt += (offset / oneDay).toFixed(0) + '天'
             return txt
         }
+    },
+    // 清理Shell数据
+    cleanShellData(text){
+        if(text.indexOf('  ') == -1) return text
+        else {
+            text = text.replaceAll('  ', ' ')
+            return util.cleanShellData(text)
+        }         
     }
 }
 

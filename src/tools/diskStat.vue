@@ -27,6 +27,7 @@
   
 <script>
 import { host } from "../plugins/api"
+import util from "../plugins/util"
 
 export default {
     name: "DiskStat",
@@ -54,7 +55,7 @@ export default {
                     let cache = res.data.split('\n')
                     for (let i = 1; i < cache.length; i++) {
                         if (cache[i].length == 0) continue;
-                        let item = cache[i].replaceAll('     ', ' ').replaceAll('   ', ' ').replaceAll('  ', ' ').replaceAll('  ', ' ')
+                        let item = util.cleanShellData(cache[i])
                         list.push(item.split(' '))
                     }
                     let group = {}

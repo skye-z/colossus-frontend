@@ -9,64 +9,65 @@
 </template>
   
 <script>
-import { host } from "../plugins/api";
+import { host } from '../plugins/api'
 import { NButton } from 'naive-ui'
-import { h } from "vue"
+import util from '../plugins/util'
+import { h } from 'vue'
 
 export default {
-    name: "ToolNetword",
+    name: 'ToolNetword',
     data: vm => ({
         id: 0,
         loading: true,
-        command: "ss -np",
+        command: 'ss -np',
         columns: [{
-            title: "类型",
-            key: "netid",
+            title: '类型',
+            key: 'netid',
             width: 80,
             sorter: 'default'
         }, {
-            title: "状态",
-            key: "state",
+            title: '状态',
+            key: 'state',
             width: 100,
             sorter: 'default'
         }, {
-            title: "接收队列",
-            key: "recv-q",
+            title: '接收队列',
+            key: 'recv-q',
             width: 95,
             sorter: 'default'
         }, {
-            title: "发送队列",
-            key: "send-q",
+            title: '发送队列',
+            key: 'send-q',
             width: 95,
             sorter: 'default'
         }, {
-            title: "本地地址",
-            key: "local",
+            title: '本地地址',
+            key: 'local',
             sorter: 'default',
             ellipsis: {
                 tooltip: true
             }
         }, {
-            title: "本地端口",
-            key: "localPort",
+            title: '本地端口',
+            key: 'localPort',
             width: 95,
             defaultSortOrder: 'ascend',
             sorter: 'default'
         }, {
-            title: "远程地址",
-            key: "peer",
+            title: '远程地址',
+            key: 'peer',
             sorter: 'default',
             ellipsis: {
                 tooltip: true
             }
         }, {
-            title: "远程端口",
-            key: "peerPort",
+            title: '远程端口',
+            key: 'peerPort',
             width: 95,
             sorter: 'default'
         }, {
-            title: "",
-            key: "process",
+            title: '',
+            key: 'process',
             align: 'right',
             width: 70,
             render(row) {
@@ -78,7 +79,7 @@ export default {
                         tertiary: true,
                         onClick: () => vm.showProcess(row)
                     },
-                    { default: () => "进程" }
+                    { default: () => '进程' }
                 )
             }
         }],
@@ -97,8 +98,7 @@ export default {
                     let cache = res.data.split('\n')
                     for (let i = 1; i < cache.length; i++) {
                         if (cache[i].length == 0) continue;
-                        let item = cache[i].replaceAll('     ', ' ').replaceAll('   ', ' ').replaceAll('  ', ' ').replaceAll('  ', ' ')
-                        item = item.replaceAll('* ', '*')
+                        let item = util.cleanShellData(cache[i])
                         list.push(item.split(' '))
                     }
 
