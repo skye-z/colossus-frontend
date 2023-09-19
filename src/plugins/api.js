@@ -62,6 +62,9 @@ export const host = {
     },
     runCMD: (id, command) => {
         return post('/host/run', { id, command })
+    },
+    runCMDIgnoreError: (id, command) => {
+        return post('/host/run', { id, command, ignore: 'true' })
     }
 }
 

@@ -38,10 +38,13 @@ const util = {
     },
     // 字节转文件大小
     bytes2Size(number) {
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        if (number === 0) return '0 Byte';
-        const i = parseInt(Math.floor(Math.log(number) / Math.log(1024)));
-        return Math.round(number / Math.pow(1024, i), 2) + ' ' + sizes[i];
+        var sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        for (var i = 1; i < sizes.length; i++) {
+          if (number < Math.pow(1024, i)) {
+            return (Math.round((number / Math.pow(1024, i - 1)) * 100) / 100) + sizes[i - 1];
+          }
+        }
+        return number;
     },
     // API函数错误
     funcError(err, loading, action) {

@@ -1,26 +1,8 @@
 <template>
     <div>
         <n-card class="full-screen" title="磁盘统计" header-style="text-align: center" :bordered="false" size="small">
-            <div class="loading flex align-center justify-center" v-if="loading">
-                <n-spin size="small" />
-            </div>
-            <n-scrollbar style="max-height: calc(100vh - 65px)">
-                <div id="group-list">
-                    <div v-for="(sub, key) in group" class="group-item">
-                        <div class="pa-10 float-right text-gray" v-if="tag[key]">{{ tag[key] }}</div>
-                        <div class="pa-10">{{ key }}</div>
-                        <div v-for="item in sub" class="border-top">
-                            <div class="pa-5">{{ item.position }}</div>
-                            <n-progress type="line" :percentage="item.proportion" color="#e88080" rail-color="#63e2b7"
-                                :height="1" :border-radius="0" :show-indicator="false" status="success" />
-                            <div class="flex align-center justify-between text-small text-gray pa-5">
-                                <div>{{ item.used }}</div>
-                                <div>{{ item.avail }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </n-scrollbar>
+            <n-data-table size="small" max-height="calc(100vh - 105px)" :loading="loading" virtual-scroll :columns="columns"
+                :data="result" :bordered="false" :row-class-name="rowColor" />
         </n-card>
     </div>
 </template>
@@ -35,12 +17,38 @@ export default {
         id: 0,
         loading: true,
         command: "df -h",
-        group: {},
-        tag: {
-            "devtmpfs": "驱动文件",
-            "tmpfs": "内存文件",
-            "overlay": "联合文件",
-        }
+        result: [],
+        columns: [{
+            title: '文件系统',
+            key: 'system',
+            width: 200,
+            ellipsis: {
+                tooltip: true
+            }
+        }, {
+            title: '大小',
+            key: 'size',
+            width: 90
+        }, {
+            title: '已用',
+            key: 'used',
+            width: 90
+        }, {
+            title: '可用',
+            key: 'avail',
+            width: 90
+        }, {
+            title: '使用率',
+            key: 'proportion',
+            sorter: 'default',
+            width: 90
+        }, {
+            title: '挂载位置',
+            key: 'position',
+            ellipsis: {
+                tooltip: true
+            }
+        }]
     }),
     methods: {
         init(id) {
@@ -58,21 +66,25 @@ export default {
                         let item = util.cleanShellData(cache[i])
                         list.push(item.split(' '))
                     }
-                    let group = {}
+                    let result = []
                     for (let i in list) {
                         let item = list[i]
-                        let sub = group[item[0]]
-                        if (sub == undefined) sub = []
-                        sub.push({
-                            "size": item[1] + 'B',
-                            "used": item[2] + 'B',
-                            "avail": item[3] + 'B',
-                            "proportion": parseInt(item[4].substring(0, item[4].length - 1)),
-                            "position": item[5]
+                        result.push({
+                            system: item[0],
+                            size: item[1] + 'B',
+                            used: item[2] + 'B',
+                            avail: item[3] + 'B',
+                            proportion: parseInt(item[4].substring(0, item[4].length - 1)),
+                            position: item[5]
                         })
-                        group[item[0]] = sub
                     }
-                    this.group = group
+                    this.result = result.sort(function (a, b) {
+                        var x = a.system.toLowerCase();
+                        var y = b.system.toLowerCase();
+                        if (x < y) { return -1; }
+                        if (x > y) { return 1; }
+                        return 0;
+                    });
                 } else {
                     window.$message.warning('执行失败, 系统暂不支持')
                 }
@@ -81,6 +93,12 @@ export default {
                 this.loading = false
                 window.$message.warning('执行失败, 发生意料之外的错误')
             })
+        },
+        rowColor(row) {
+            if (row.proportion >= 90) return "pro3"
+            else if (row.proportion >= 80) return "pro2"
+            else if (row.proportion >= 60) return "pro1"
+            return ""
         }
     }
 };
@@ -97,5 +115,18 @@ export default {
     border-radius: 8px;
     position: relative;
     min-width: 188px;
+}
+
+.full-screen:deep(.pro1 td) {
+    color: #e7b100;
+}
+
+
+.full-screen:deep(.pro2 td) {
+    color: #e57a00;
+}
+
+.full-screen:deep(.pro3 td) {
+    color: #ff0000;
 }
 </style>
