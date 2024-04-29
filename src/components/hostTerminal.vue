@@ -50,7 +50,7 @@ export default {
         system: null,
     }),
     methods: {
-        init(hostId,platform,system) {
+        init(hostId, platform, system) {
             this.connect = true
             if (hostId) this.id = hostId
             if (platform) this.platform = platform
@@ -75,7 +75,9 @@ export default {
                     this.fitAddon.fit()
                 }, 100)
                 // 创建连接
-                this.addSocket()
+                setTimeout(() => {
+                    this.addSocket();
+                }, 100);
                 // 输入聚焦
                 this.term.focus()
                 // 加载大小变动事件
@@ -93,7 +95,7 @@ export default {
         },
         addSocket() {
             // 创建WebSocket连接
-            this.socket = new WebSocket(this.socketURI + '?cols=' + this.term.cols + '&rows' + this.term.rows + '&id=' + this.id)
+            this.socket = new WebSocket(this.socketURI + '?cols=' + this.term.cols + '&rows=' + this.term.rows + '&id=' + this.id)
             // 连接开启事件
             this.socket.onopen = () => {
                 window.dispatchEvent(new CustomEvent("cache:connect", { detail: { id: this.id, connect: true } }))
